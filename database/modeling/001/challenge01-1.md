@@ -17,13 +17,13 @@
 
 セットメニューと単品メニューの扱いを分けて定義した。
 <br>
-セットメニュー内の寿司ネタは`set_products`にて単品メニューを参照することができる。
+セットメニュー内の寿司は`set_products`にて単品メニューを参照することができる。
 
 ### 値段の変更について
 
 セットメニュー、単品メニューの値段変更がある場合、`is_delete`を`true`とし、
 <br>
-値段を変更したレコードを追加することで、過去の購買履歴に干渉せずに、値段変更ができるにした。
+値段を変更したレコードを追加することで、過去の購買履歴に干渉せずに、値段変更ができるようにした。
 
 ## ER 図
 
@@ -69,7 +69,7 @@ erDiagram
     order_products {
         int id PK
         int order_id FK "オーダーId"
-        int product_id FK "寿司Id"
+        int product_id FK "単品メニューId"
         int set_id FK "セットメニューId"
         boolan has_wasabi "わさび有無"
         int quantity "数量"
