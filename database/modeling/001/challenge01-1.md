@@ -29,13 +29,13 @@
 
 ```mermaid
 erDiagram
-    customers ||--|{ orders : "1人のユーザーは1以上の注文を持つ"
-    orders ||--|{ order_products: "1回の注文で1以上の商品を注文できる"
-    order_products ||--o{ products: "1つの商品は0以上の単品メニューを注文できる"
-    order_products ||--o{ sets: "1つの商品は0以上のセットメニューを注文できる"
-    sets ||--|{ set_products: "1つのセットメニューは1以上の単品メニューを持つ"
-    genres ||--|{ products : "1つのジャンルに1以上の単品メニューを持つ"
-    genres ||--|{ sets : "1つのジャンルに1以上のセットメニューを持つ"
+    customers ||--|{ orders : ""
+    orders ||--|{ order_products: ""
+    order_products ||--o{ products: ""
+    order_products ||--o{ sets: ""
+    sets ||--|{ set_products: ""
+    genres ||--|{ products : ""
+    genres ||--|{ sets : ""
 
     customers {
         int id PK
@@ -91,6 +91,79 @@ erDiagram
         int id PK
         int set_id FK
         int product_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    genres {
+        int id PK
+        varchar name "ジャンル名"
+        timestamp created_at
+        timestamp updated_at
+    }
+```
+
+## 参考資料
+
+以下、参考資料からセットメニューを加えた管理方法があり、参考になった。
+https://bagelee.com/programming/rdb-set-menu/
+
+以下、資料をもとに作成した ER 図を示す
+
+## ER 図
+
+```mermaid
+erDiagram
+    customers ||--|{ orders : ""
+    orders ||--|{ order_menus : ""
+    order_menus ||--o{ menus : ""
+    menus ||--|{ set_menu_items : ""
+    genres ||--|{ menus : ""
+
+    customers {
+        int id PK
+        varchar name
+        int phone
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    menus {
+        int id PK
+        varchar name "寿司名"
+        int price "値段"
+        int genre_id FK "ジャンル"
+        boolean is_set_menu "セットメニュー判定"
+        boolean is_deleted "削除フラグ"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    orders {
+        int id PK
+        int customer_id FK "顧客Id"
+        varchar content "その他"
+        int total_price "合計金額"
+        timestamp paid_at "支払日"
+        timestamp canceled_at "キャンセル日"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    order_menus {
+        int id PK
+        int order_id FK "オーダーId"
+        int menu_id FK "メニューId"
+        boolan has_wasabi "わさび有無"
+        int quantity "数量"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    set_menu_items {
+        int id PK
+        int set_menu_id FK
+        int menu_item_id FK
         timestamp created_at
         timestamp updated_at
     }
