@@ -5,13 +5,10 @@
 ```mermaid
 erDiagram
     customers ||--|{ orders : ""
-    orders ||--|{ order_details : ""
-    order_details ||--o{ products : ""
-    order_details ||--o{ sets : ""
-    sets ||--|{ set_details : ""
-    genres ||--|{ products : ""
-    genres ||--|{ sets : ""
-    order_details ||--|| order_detail_options : ""
+    orders ||--|{ order_menus : ""
+    order_menus ||--o{ menus : ""
+    menus ||--|{ set_menu_items : ""
+    genres ||--|{ menus : ""
 
     customers {
         int id PK
@@ -21,11 +18,12 @@ erDiagram
         timestamp updated_at
     }
 
-    products {
+    menus {
         int id PK
         varchar name "寿司名"
         int price "値段"
         int genre_id FK "ジャンル"
+        boolean is_set_menu "セットメニュー判定"
         boolean is_deleted "削除フラグ"
         timestamp created_at
         timestamp updated_at
@@ -42,38 +40,20 @@ erDiagram
         timestamp updated_at
     }
 
-    order_details {
+    order_menus {
         int id PK
         int order_id FK "オーダーId"
-        int product_id FK "単品メニューId"
-        int set_id FK "セットメニューId"
-        int order_detail_option_id FK "商品オプションId"
+        int menu_id FK "メニューId"
+        int quantity "数量"
+        varchar rice_size "シャリサイズ"
         timestamp created_at
         timestamp updated_at
     }
 
-    order_detail_options {
+    set_menu_items {
         int id PK
-        boolean has_wasabi "わさび有無"
-        varchar rise_size "シャリサイズ"
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    sets {
-        int id PK
-        varchar name "セットメニュー名"
-        int price "値段"
-        int genre_id FK "ジャンル"
-        boolean is_deleted "削除フラグ"
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    set_details {
-        int id PK
-        int set_id FK
-        int product_id FK
+        int set_menu_id FK
+        int menu_item_id FK
         timestamp created_at
         timestamp updated_at
     }
