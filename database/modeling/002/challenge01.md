@@ -14,6 +14,8 @@ erDiagram
     workspace_users ||--|{ channel_users : ""
     channels ||--|{ channel_users : ""
     channel_users }|--o{ messages : ""
+    messages ||--o{ threads : ""
+    channels ||--o{ threads : ""
 
     users {
         int id PK
@@ -59,7 +61,14 @@ erDiagram
         int id PK
         varchar message "メッセージ"
         int channel_user_id FK
-        int message_id FK
+        int thread_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    threads {
+        int id PK
+        int channel_id FK
         timestamp created_at
         timestamp updated_at
     }
