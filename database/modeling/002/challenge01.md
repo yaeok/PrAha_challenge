@@ -13,9 +13,9 @@ erDiagram
     workspaces ||--|{ channels : ""
     workspace_users ||--|{ channel_users : ""
     channels ||--|{ channel_users : ""
-    channel_users }|--o{ messages : ""
-    messages ||--o{ threads : ""
     channels ||--o{ threads : ""
+    threads ||--|{ messages : ""
+    channel_users ||--o{ messages : ""
 
     users {
         int id PK
