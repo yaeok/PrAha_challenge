@@ -1,10 +1,10 @@
-## 追加仕様
+# 追加仕様
 
-### 自分の追加仕様
+## 自分の追加仕様
 
 タイムセールなどの割引ができるような仕様を追加する
 
-## ER 図
+# ER 図
 
 ```mermaid
 erDiagram
@@ -13,6 +13,7 @@ erDiagram
     order_menus ||--o{ menus : ""
     menus ||--|{ set_menu_items : ""
     genres ||--|{ menus : ""
+    orders ||--|| order_status : ""
     order_menus ||--|{ order_menu_option : ""
     order_menu_option ||--|{ discount : ""
 
@@ -40,10 +41,16 @@ erDiagram
         int customer_id FK "顧客Id"
         varchar content "その他"
         int total_price "合計金額"
-        timestamp paid_at "支払日"
-        timestamp canceled_at "キャンセル日"
+        int status_id FK
         timestamp created_at
         timestamp updated_at
+    }
+
+    order_status {
+        int id PK
+        varchar status "状態"
+        timestamp paid_at "支払日"
+        timestamp canceled_at "キャンセル日"
     }
 
     order_menus {

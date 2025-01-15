@@ -1,3 +1,7 @@
+## 設計方針
+
+シャリサイズは、アプリ側で Enum 管理することで、DB とは切り離して考える。
+
 ## ER 図
 
 ```mermaid
@@ -7,6 +11,7 @@ erDiagram
     order_menus ||--o{ menus : ""
     menus ||--|{ set_menu_items : ""
     genres ||--|{ menus : ""
+    orders ||--|| order_status : ""
 
     customers {
         int id PK
@@ -32,10 +37,16 @@ erDiagram
         int customer_id FK "顧客Id"
         varchar content "その他"
         int total_price "合計金額"
-        timestamp paid_at "支払日"
-        timestamp canceled_at "キャンセル日"
+        int status_id FK
         timestamp created_at
         timestamp updated_at
+    }
+
+    order_status {
+        int id PK
+        varchar status "状態"
+        timestamp paid_at "支払日"
+        timestamp canceled_at "キャンセル日"
     }
 
     order_menus {
