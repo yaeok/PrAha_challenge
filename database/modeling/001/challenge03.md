@@ -9,18 +9,14 @@ CREATE TABLE customers (
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-```
 
-```
 CREATE TABLE genres (
 id SERIAL PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE menus (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -31,62 +27,50 @@ CREATE TABLE menus (
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
 customer_id INT REFERENCES customers(id),
 content VARCHAR(500),
 total_price INT NOT NULL,
-status_id INT REFERENCES order_status(id),
+status_id INT REFERENCES order_statuses(id),
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE order_statuses (
 id SERIAL PRIMARY KEY,
 status VARCHAR(100) NOT NULL,
 paid_at TIMESTAMP,
-canceled_at TIMESTAMP'
+canceled_at TIMESTAMP
 );
-```
 
-```
 CREATE TABLE order_menus (
 id SERIAL PRIMARY KEY,
 order_id INT REFERENCES orders(id),
 menu_id INT REFERENCES menus(id),
 quantity INT NOT NULL,
-option_id INT REFERENCES order_menu_option(id),
+option_id INT REFERENCES order_menu_options(id),
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE order_menu_options (
 id SERIAL PRIMARY KEY,
 has_wasabi BOOLEAN NOT NULL DEFAULT FALSE,
 rice_size VARCHAR(100),
-discount INT REFERENCES discount(id),
+discount INT REFERENCES discounts(id),
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE discounts (
 id SERIAL PRIMARY KEY,
 rate NUMERIC(5, 2) NOT NULL,
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-```
 
-```
 CREATE TABLE set_menu_items (
 id SERIAL PRIMARY KEY,
 set_menu_id INT REFERENCES menus(id),
@@ -104,65 +88,49 @@ INSERT INTO customers (name, phone) VALUES ('Jane Smith', '0987654321');
 INSERT INTO customers (name, phone) VALUES ('Alice Johnson', '1112223333');
 INSERT INTO customers (name, phone) VALUES ('Bob Brown', '4445556666');
 INSERT INTO customers (name, phone) VALUES ('Charlie White', '7778889999');
-```
 
-```
 INSERT INTO genres (name) VALUES ('Main Dish');
 INSERT INTO genres (name) VALUES ('Dessert');
 INSERT INTO genres (name) VALUES ('Beverage');
 INSERT INTO genres (name) VALUES ('Appetizer');
 INSERT INTO genres (name) VALUES ('Side Dish');
-```
 
-```
 INSERT INTO menus (name, price, genre_id, is_set_menu) VALUES ('Grilled Chicken', 1500, 1, FALSE);
 INSERT INTO menus (name, price, genre_id, is_set_menu) VALUES ('Cheesecake', 500, 2, FALSE);
 INSERT INTO menus (name, price, genre_id, is_set_menu) VALUES ('Cola', 200, 3, FALSE);
 INSERT INTO menus (name, price, genre_id, is_set_menu) VALUES ('Spring Rolls', 800, 4, FALSE);
 INSERT INTO menus (name, price, genre_id, is_set_menu) VALUES ('Meal Set A', 2000, 1, TRUE);
-```
 
-```
 INSERT INTO order_statuses (status) VALUES ('Pending');
 INSERT INTO order_statuses (status) VALUES ('Confirmed');
 INSERT INTO order_statuses (status) VALUES ('In Progress');
 INSERT INTO order_statuses (status) VALUES ('Completed');
 INSERT INTO order_statuses (status) VALUES ('Canceled');
-```
 
-```
 INSERT INTO orders (customer_id, content, total_price, status_id) VALUES (1, 'Grilled Chicken and Cola', 1700, 2);
 INSERT INTO orders (customer_id, content, total_price, status_id) VALUES (2, 'Cheesecake and Spring Rolls', 1300, 1);
 INSERT INTO orders (customer_id, content, total_price, status_id) VALUES (3, 'Meal Set A', 2000, 3);
 INSERT INTO orders (customer_id, content, total_price, status_id) VALUES (4, 'Cola and Spring Rolls', 1000, 4);
 INSERT INTO orders (customer_id, content, total_price, status_id) VALUES (5, 'Grilled Chicken', 1500, 5);
-```
 
-```
 INSERT INTO order_menu_options (has_wasabi, rice_size, discount) VALUES (TRUE, 'Large', NULL);
 INSERT INTO order_menu_options (has_wasabi, rice_size, discount) VALUES (FALSE, 'Medium', 1);
 INSERT INTO order_menu_options (has_wasabi, rice_size, discount) VALUES (TRUE, 'Small', 2);
 INSERT INTO order_menu_options (has_wasabi, rice_size, discount) VALUES (FALSE, 'Large', NULL);
 INSERT INTO order_menu_options (has_wasabi, rice_size, discount) VALUES (TRUE, NULL, NULL);
-```
 
-```
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (1, 1, 1, 1);
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (2, 4, 2, 2);
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (3, 5, 1, 3);
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (4, 3, 3, NULL);
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (5, 1, 2, 1);
-```
 
-```
 INSERT INTO discounts (rate) VALUES (0.10);
 INSERT INTO discounts (rate) VALUES (0.15);
 INSERT INTO discounts (rate) VALUES (0.20);
 INSERT INTO discounts (rate) VALUES (0.05);
 INSERT INTO discounts (rate) VALUES (0.30);
-```
 
-```
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 1);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 3);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 4);
@@ -190,3 +158,11 @@ JOIN
 GROUP BY
     o.id, o.customer_id;
 ```
+
+実行結果
+
+| order_id | customer_id | total_price |
+| -------- | ----------- | ----------- |
+| 5        | 5           | 3000        |
+| 4        | 4           | 600         |
+| 1        | 1           | 1500        |
