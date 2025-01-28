@@ -4,6 +4,11 @@ https://separated-rover-67e.notion.site/1-feff30c6daf84d80b0ef44d4853ea8a3
 
 ## 命名規則
 
+- テーブル名は`複数形`、`スネークケース`で定義する
+- 主キーは全て`id`で定義する
+- カラム名は`単数形`、`スネークケース`で定義する
+- リレーションを表現する場合、`テーブル名単数形_id`で定義する
+
 ## ER 図
 
 ```mermaid
@@ -15,60 +20,50 @@ erDiagram
     channels ||--|{ channel_users : ""
     channels ||--o{ threads : ""
     threads ||--|{ messages : ""
-    channel_users ||--o{ messages : ""
+    users ||--|{ messages : ""
 
     users {
         int id PK
         varchar name
-        timestamp created_at
-        timestamp updated_at
     }
 
     workspaces {
         int id PK
         varchar name
-        timestamp created_at
-        timestamp updated_at
     }
 
     workspace_users {
         int id PK
         int workspace_id FK
         int user_id FK
-        boolean is_join "参加フラグ"
-        timestamp created_at
-        timestamp updated_at
     }
 
     channels {
         int id PK
         varchar name
         int workspace_id FK
-        timestamp created_at
-        timestamp updated_at
     }
 
     channel_users {
         int id PK
         int user_id FK
         int channel_id FK
-        boolean is_join "参加フラグ"
-        timestamp created_at
-        timestamp updated_at
+    }
+
+    threads {
+      int id PK
+      int channel_id FK
+      int message_id FK "メッセージの1番初めのメッセージ"
+      timestamp created_at
+      timestamp updated_at
     }
 
     messages {
         int id PK
-        varchar message "メッセージ"
-        int channel_user_id FK
-        int thread_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    threads {
-        int id PK
-        int channel_id FK
+        varchar content "メッセージ"
+        int thread_id FK "スレッドId"
+        int user_id FK "投稿者"
+        enum status "送信前・送信済・更新・削除"
         timestamp created_at
         timestamp updated_at
     }
