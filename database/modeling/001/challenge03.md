@@ -67,6 +67,8 @@ updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 CREATE TABLE discounts (
 id SERIAL PRIMARY KEY,
 rate NUMERIC(5, 2) NOT NULL,
+startDate TIMESTAMP NOT NULL,
+endDate TIMESTAMP NOT NULL,
 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -125,17 +127,33 @@ INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (3, 5, 1
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (4, 3, 3, NULL);
 INSERT INTO order_menus (order_id, menu_id, quantity, option_id) VALUES (5, 1, 2, 1);
 
-INSERT INTO discounts (rate) VALUES (0.10);
-INSERT INTO discounts (rate) VALUES (0.15);
-INSERT INTO discounts (rate) VALUES (0.20);
-INSERT INTO discounts (rate) VALUES (0.05);
-INSERT INTO discounts (rate) VALUES (0.30);
+INSERT INTO discounts (rate, startDate, endDate) VALUES (0.10, '2025-03-01 00:00:00', '2025-03-31 23:59:59');
+INSERT INTO discounts (rate, startDate, endDate) VALUES (0.15, '2025-07-01 00:00:00', '2025-07-31 23:59:59');
+INSERT INTO discounts (rate, startDate, endDate) VALUES (0.20, '2025-10-01 00:00:00', '2025-10-15 23:59:59');
+INSERT INTO discounts (rate, startDate, endDate) VALUES (0.25, '2025-12-20 00:00:00', '2025-12-26 23:59:59');
+INSERT INTO discounts (rate, startDate, endDate) VALUES (0.05, '2026-01-01 00:00:00', '2026-01-15 23:59:59');
 
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 1);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 3);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 4);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 2);
 INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 1);
+```
+
+テーブル削除用
+
+```
+
+DROP TABLE IF EXISTS set_menu_items CASCADE;
+DROP TABLE IF EXISTS order_menus CASCADE;
+DROP TABLE IF EXISTS order_menu_options CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS menus CASCADE;
+DROP TABLE IF EXISTS genres CASCADE;
+DROP TABLE IF EXISTS discounts CASCADE;
+DROP TABLE IF EXISTS order_statuses CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+
 ```
 
 # ユースケース
@@ -145,10 +163,11 @@ INSERT INTO set_menu_items (set_menu_id, menu_item_id) VALUES (5, 1);
 クエリ
 
 ```
+
 SELECT
     o.id AS order_id,
     o.customer_id,
-    SUM(m.price * om.quantity) AS total_price
+    SUM(m.price \* om.quantity) AS total_price
 FROM
     orders o
 JOIN
@@ -157,6 +176,7 @@ JOIN
     menus m ON om.menu_id = m.id
 GROUP BY
     o.id, o.customer_id;
+
 ```
 
 実行結果
