@@ -9,38 +9,45 @@ https://separated-rover-67e.notion.site/4-300287c1384d4f8d905741fc0cc3f007
 ```mermaid
 erDiagram
     users ||--o{ reminders : ""
-    reminders ||--|{ options : ""
     reminders ||--|{ schedules : ""
+    reminders ||--|{ mentions : ""
+    users ||--o{ mentions : ""
+    schedules }|--|| frequencies : ""
 
     users {
         int id PK
         varchar name
-        timestamp created_at
-        timestamp updated_at
     }
 
     reminders {
         int id PK
         varchar content
-        int send_user_id FK
-        int owner_id FK
         int option_id FK
+        int user_id FK
         timestamp created_at
         timestamp updated_at
+    }
+
+    mentions {
+      int id PK
+      int address_id FK
+      int reminder_id FK
     }
 
     schedules {
         int id PK
         int reminder_id FK
-        timestamp processed_at "実行日"
+        int frequency_id FK
+        time start_date
+        timestamp next_run_date
+        timestamp completed_at "完了日"
         timestamp created_at
         timestamp updated_at
     }
 
-    options {
+    frequencies {
         int id PK
-        varchar title "オプションタイトル"
-        timestamp created_at
-        timestamp updated_at
+        varchar name "頻度"
+        boolean is_active "有効フラグ"
     }
 ```
